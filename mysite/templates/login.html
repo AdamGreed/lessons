@@ -11,6 +11,7 @@
 
         {% for error in form.username.errors %}
         <div class="alert alert-danger"> {{ error }}</div>
+
         {% endfor %}
 
     </div>
@@ -26,7 +27,7 @@
         {{ form.remember_me(class="form-check-input") }} {{ form.remember_me.label(class="form-check-label) }}
     </div>
 
-    {{ form.submit(class="btn btn-primary") }}
+    {{ form.submit(class="btn, btn-primary") }}
 </form>
 
 {% endblock %}
