@@ -1,5 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
+from PIL import Image
+import secrets
+import os
 
 from mysite import app, db
 from mysite.forms import LoginForm, RegistrationForm, AccountUpdateForm
@@ -66,14 +69,34 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, p_ext = os.path.splitext(form_picture.filename)
+    p_filename = random_hex + p_ext
+    picture_path = os.path.join(app.root_path, 'static/img/avatar', p_filename)
+
+    resize = (125, 125)
+    image = Image.open(form_picture)
+    image.thumbnail(resize)
+
+    #form picture.save(picture path)
+    form_picture.save(picture_path)
+    return p_filename
+
+
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     form = AccountUpdateForm()
-    avatar = url_for('static', filename='img/avatars/' + current_user.avatar)
+    avatar = url_for('static', filename='img/avatar/' + current_user.avatar)
+
+
 
 
     if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.avatar = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
