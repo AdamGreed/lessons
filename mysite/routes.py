@@ -58,7 +58,7 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(username=form.username.data.lower(), email=form.email.data.lower())
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -90,7 +90,7 @@ def account():
     form = AccountUpdateForm()
     avatar = url_for('static', filename='img/avatar/' + current_user.avatar)
 
-
+    feedback = Zvonok.query.all()
 
 
     if form.validate_on_submit():
